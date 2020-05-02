@@ -86,7 +86,7 @@ def getMostCommon():
  
 
 def genRule():
-    #text_rule.delete('1.0', tkinter.END)
+    text_rule.delete('1.0', tkinter.END)
     if FILE_NAME == 'none':
         messagebox.showerror("Error", "Could not calculate sha256 to generate the rule - select file")
     _strings = []

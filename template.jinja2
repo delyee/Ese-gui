@@ -17,7 +17,6 @@ rule {{ rulename }}: tag
     strings:
         {% for line in strings %}$ = { {{ line }} }
         {% endfor %}
-    
     condition:
         all of them
 }
