@@ -10,4 +10,5 @@
 ![Result](screens/one.png)
 
 todo: buttons
-old useless project: github.com/delyee/Ese
+
+[old useless project](https://github.com/delyee/Ese)
