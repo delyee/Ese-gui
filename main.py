@@ -80,13 +80,15 @@ def getMostCommon():
             all_lines.append(split_line)
 
     listbox_patterns.delete('0', tkinter.END)
-    for line in sorted(all_lines, key=len):
+    for line in sorted(set(all_lines), key=len):
         #_tmp = '{}\n'.format(i)
         listbox_patterns.insert(END, line)
  
 
 def genRule():
-    text_rule.delete('1.0', tkinter.END)
+    #text_rule.delete('1.0', tkinter.END)
+    if FILE_NAME == 'none':
+        messagebox.showerror("Error", "Could not calculate sha256 to generate the rule - select file")
     _strings = []
     selected_text_list = [listbox_patterns.get(i) for i in listbox_patterns.curselection()]
     for line in selected_text_list:
