@@ -8,6 +8,7 @@ from collections import Counter
 from datetime import datetime
 from hashlib import sha256
 from uuid import uuid4
+from jinja2 import Template
 
 
 FILE_NAME = tkinter.NONE
@@ -19,10 +20,10 @@ def open_folder():
     print(FOLDER_NAME)
 
 def save_as():
-    out = asksaveasfile(mode='w', defaultextension='txt')
-    data = text.get('1.0', tkinter.END)
+    out = asksaveasfile(mode='w', defaultextension='yar')
+    data = text_rule.get('1.0', tkinter.END)
     try:
-        out.write(data.rstrip())
+        out.write(data)
     except Exception:
         showerror(title="Error", message="Saving file error")
 
@@ -70,11 +71,13 @@ def otherSplit(s):
     return _
 
 def getMostCommon():
-    with open(FILE_NAME) as f:
-        all_lines = []
-        for line in f.readlines():
-            for split_line in otherSplit(line):
-                all_lines.append(split_line)
+    s = text_src.get(1.0, END)
+    all_lines = []
+
+    # splitlines != split, read docs
+    for line in s.splitlines():
+        for split_line in otherSplit(line):
+            all_lines.append(split_line)
 
     listbox_patterns.delete('0', tkinter.END)
     for line in sorted(all_lines, key=len):
@@ -83,15 +86,17 @@ def getMostCommon():
  
 
 def genRule():
-    #text_rule.delete('1.0', tkinter.END)
+    text_rule.delete('1.0', tkinter.END)
     _strings = []
     selected_text_list = [listbox_patterns.get(i) for i in listbox_patterns.curselection()]
     for line in selected_text_list:
-        _mda = "$ = { " + " ".join("{:02x}".format(ord(c)) for c in line) + " }"
+        _mda = " ".join("{:02x}".format(ord(c)) for c in line)
         _strings.append(_mda)
     
-    with open('template.yar') as f_template:
-        _tmp = f_template.read().format(rulename=uuid4().hex, date=datetime.now().strftime("%d.%m.%Y"), sha256sum=sha256(open(FILE_NAME, 'rb').read()).hexdigest(), strings=_strings)
+    with open('template.jinja2') as f_template:
+        template = Template(f_template.read())
+
+    _tmp = template.render(rulename=uuid4().hex, date=datetime.now().strftime("%d.%m.%Y"), sha256sum=sha256(open(FILE_NAME, 'rb').read()).hexdigest(), strings=_strings)
     text_rule.insert('1.0', _tmp)
 
 
