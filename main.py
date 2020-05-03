@@ -36,6 +36,7 @@ def open_file():
     data = inp.read()
     text_src.delete('1.0', tkinter.END)
     text_src.insert('1.0', data)
+    getMostCommon()
 
 
 root = tkinter.Tk()
@@ -87,8 +88,8 @@ def getMostCommon():
 
 def genRule():
     text_rule.delete('1.0', tkinter.END)
-    if FILE_NAME == 'none':
-        messagebox.showerror("Error", "Could not calculate sha256 to generate the rule - select file")
+    if FILE_NAME == tkinter.NONE:
+        messagebox.showerror("Error", "Could not calculate sha256 to generate the rule - need select file")
     _strings = []
     selected_text_list = [listbox_patterns.get(i) for i in listbox_patterns.curselection()]
     for line in selected_text_list:
