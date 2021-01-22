@@ -81,7 +81,10 @@ def getMostCommon():
             all_lines.append(split_line)
 
     listbox_patterns.delete('0', tkinter.END)
-    for line in sorted(set(all_lines), key=len):
+    all_lines = sorted(set(all_lines), key=len)
+    all_lines.sort()
+    #for line in sorted(set(all_lines), key=len):
+    for line in all_lines:
         #_tmp = '{}\n'.format(i)
         listbox_patterns.insert(END, line)
  
@@ -89,7 +92,9 @@ def getMostCommon():
 def genRule():
     text_rule.delete('1.0', tkinter.END)
     if FILE_NAME == tkinter.NONE:
-        messagebox.showerror("Error", "Could not calculate sha256 to generate the rule - need select file")
+        _sha256sum = sha256(text_src.get(1.0, END).encode()).hexdigest()
+    else:
+        _sha256sum = sha256(open(FILE_NAME, 'rb').read()).hexdigest()
     _strings = []
     selected_text_list = [listbox_patterns.get(i) for i in listbox_patterns.curselection()]
     for line in selected_text_list:
@@ -99,7 +104,7 @@ def genRule():
     with open('template.jinja2') as f_template:
         template = Template(f_template.read())
 
-    _tmp = template.render(rulename=uuid4().hex, date=datetime.now().strftime("%d.%m.%Y"), sha256sum=sha256(open(FILE_NAME, 'rb').read()).hexdigest(), strings=_strings)
+    _tmp = template.render(rulename=uuid4().hex, date=datetime.now().strftime("%d.%m.%Y"), sha256sum=_sha256sum, strings=_strings)
     text_rule.insert('1.0', _tmp)
 
 
